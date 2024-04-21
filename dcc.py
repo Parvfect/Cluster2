@@ -1,5 +1,6 @@
 
 import utils
+import os
 import galois
 import coding_matrices as r
 import math
@@ -264,80 +265,47 @@ def unmask_reordering(symbol_likelihood_arr, mask, ffdim):
     return unmasked_likelihood_arr
 
 
-def decoding_errors_fer(k, n, dv, dc, ffdim, P, H, G, GF, graph, C, symbols, n_motifs, n_picks, decoder=None, masked=False, decoding_failures_parameter=20, max_iterations=200, iterations=500, uncoded=False, bec_decoder=False, label=None, code_class="", read_lengths=np.arange(1,20)):
+def decoding_errors_fer(k, n, dv, dc, ffdim, P, H, G, GF, graph, C, symbols, n_motifs, n_picks, decoder=None, masked=False, decoding_failures_parameter=20, max_iterations=10, iterations=500, uncoded=False, bec_decoder=False, label=None, code_class="", read_lengths=np.arange(1,20)):
 
     decoding_failures_parameter = max_iterations # Change this for long compute
 
     frame_error_rate = []
-    max_iterations = max_iterations
-    decoding_failures_parameter = decoding_failures_parameter # But can be adjusted as a parameter
-
     symbol_keys = np.arange(0, ffdim)
     
-    for read_length in tqdm(read_lengths):
-        decoding_failures, iterations, counter = 0, 0, 0
-        for iteration in tqdm(range(max_iterations)):
+    decoding_failures, iterations, counter = 0, 0, 0
+    for iteration in tqdm(range(max_iterations)):
             
-            input_arr = [random.choice(symbol_keys) for i in range(k)]
-            #print(G)
-            C = np.dot(input_arr, G) % ffdim
+        input_arr = [random.choice(symbol_keys) for i in range(k)]
+        
+        C = np.dot(input_arr, G) % ffdim
 
-            if masked:
-                mask = [np.random.randint(ffdim) for i in range(n)]
-                C2 = [(C[i] + mask[i]) % ffdim for i in range(len(C))]
-                symbol_likelihoods_arr = np.array(simulate_reads(C2, symbols, read_length, P, n_motifs, n_picks))
-                #print(mask[:5])
-                #print(symbol_likelihoods_arr[:5])
-                symbol_likelihoods_arr = unmask_reordering(symbol_likelihoods_arr, mask, ffdim)
-                #print(symbol_likelihoods_arr[:5])
-                #exit()
-            else:
-                symbol_likelihoods_arr = np.array(simulate_reads(C, symbols, read_length, P, n_motifs, n_picks))
+        # Masking
+        mask = [np.random.randint(ffdim) for i in range(n)]
+        C2 = [(C[i] + mask[i]) % ffdim for i in range(len(C))]
+        
+        # Channel Simulation
+        symbol_likelihoods_arr = np.array(simulate_reads(C2, symbols, read_lengths[0], P, n_motifs, n_picks))
+        
+        # Unmasking
+        symbol_likelihoods_arr = unmask_reordering(symbol_likelihoods_arr, mask, ffdim)
 
-            #symbol_likelihoods_arr = [[1/67]*67]*n
-            #print(symbol_likelihoods_arr)
-
-            if uncoded:
-                z = [get_max_symbol(i) for i in symbol_likelihoods_arr]
-            elif decoder:
-                z = decoder.decode(symbol_likelihoods_arr, max_iter=20)
-            else:
-                z = graph.qspa_decode(symbol_likelihoods_arr, H, GF)
-                
+        # Decoding
+        z = graph.qspa_decode(symbol_likelihoods_arr, H, GF)
+        
+        # Validating
+        if not np.array_equal(C, z):
+            decoding_failures+=1
             
-            #exit()
-            #print(C)
-            #print(z)
+        iterations += 1
             
-
-            if np.array_equal(C, z):
-                counter += 1
-                #print("Correct")
-            else: 
-                #print("Incorrect")
-                decoding_failures+=1
-            
-            iterations += 1
-            if decoding_failures == decoding_failures_parameter:
-                break
-            
-            
-        assert counter == (iterations - decoding_failures)
-        error_rate = (iterations - counter)/iterations
-        frame_error_rate.append(error_rate)
     
-    plt.plot(read_lengths, frame_error_rate, 'o', label=label)
-    plt.plot(read_lengths, frame_error_rate)
-    plt.title("Frame Error Rate for DCC for {}{}-{}  {}-{} for 8C4 Symbols".format(code_class, k, n, dv, dc))
-    plt.ylabel("Frame Error Rate")
-    plt.xlabel("Read Length")
+    print(iterations)
+    print(decoding_failures)
 
-    # Displaying final figure
-    plt.xlim(read_lengths[0], read_lengths[-1])
-    plt.ylim(0,1)
-    plt.xticks(np.arange(read_lengths[0], read_lengths[-1], 1))
+    write_path = os.path.join(os.environ['HOME'], "results2.txt")
+    with open(write_path, "a") as f:
+        f.write(f"\nIterations {iterations} Failures {decoding_failures}")
 
-    print(frame_error_rate)
 
     return frame_error_rate
 
@@ -353,26 +321,16 @@ def run_fer(n_motifs, n_picks, dv, dc, k, n, L, M, ffdim, P, code_class="", iter
     GFH = GF(H.astype(int)) # * GF(np.random.choice(GF.elements[1:], siz
     GFK = GF(G.astype(int))
 
-    if graph_decoding:
-        decoding_errors_fer(k, n, dv, dc, ffdim, P, GFH, G, GF, graph, C, symbols, n_motifs, n_picks, masked=masked, label=label + " Graph QSPA", read_lengths=read_lengths)  
-    elif uncoded:
-        decoding_errors_fer(k, n, dv, dc, ffdim, P, GFH, G, GF, graph, C, symbols, n_motifs, n_picks, uncoded=True, masked=masked, label=label + " Uncoded", read_lengths=read_lengths) 
-    else:
-        decoder = QSPADecoder(n, n-k, GF, GFH)
-        decoding_errors_fer(k, n, dv, dc, ffdim, P, GFH, G, GF, graph, C, symbols, n_motifs, n_picks, decoder=decoder, masked=masked, label= label + " Matrice QSPA", read_lengths=read_lengths)    
-
-    plt.legend()
-    plt.grid()
-    #plt.show()
-
-
+    decoding_errors_fer(k, n, dv, dc, ffdim, P, GFH, G, GF, graph, C, symbols, n_motifs, n_picks, masked=masked, label=label + " Graph QSPA", read_lengths=read_lengths)  
+    
+    
 if __name__ == "__main__":
     with Profile() as prof:
         n_motifs, n_picks = 8, 4
         dv, dc, ffdim, P = 3, 9, 67, 2 * 0.038860387943791645 
         k, n = 30, 45
         L, M = 12, 51
-        read_lengths = np.arange(8, 15)
+        read_lengths = np.arange(10,11)
 
         #run_fer(n_motifs, n_picks, dv, dc, k, n, L, M, ffdim, P, code_class="",  uncoded=False, zero_codeword=False, bec_decoder=False, graph_decoding=False, read_lengths=read_lengths)
          
@@ -381,11 +339,7 @@ if __name__ == "__main__":
 
         run_fer(n_motifs, n_picks, dv, dc, k, n, L, M, ffdim, P, code_class="",  uncoded=False, zero_codeword=True, masked=masked, bec_decoder=False, graph_decoding=True, read_lengths=read_lengths, label="Zero", Harr=Harr)
 
-        run_fer(n_motifs, n_picks, dv, dc, k, n, L, M, ffdim, P, code_class="",  uncoded=False, zero_codeword=False, masked=masked, bec_decoder=False, graph_decoding=True, read_lengths=read_lengths, label="FullCW", Harr=Harr)
         
-        
-        
-        plt.show()
     (
         Stats(prof)
         .strip_dirs()
