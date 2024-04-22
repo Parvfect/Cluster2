@@ -340,12 +340,13 @@ if __name__ == "__main__":
 
         run_fer(n_motifs, n_picks, dv, dc, k, n, L, M, ffdim, P, code_class="sc_",  uncoded=False, zero_codeword=True, masked=masked, bec_decoder=False, graph_decoding=True, read_lengths=read_lengths, label="Zero", Harr=Harr)
 
-        
+    """
     (
         Stats(prof)
         .strip_dirs()
         .sort_stats("cumtime")
         .print_stats(10)
-    )                
+    )  
+    """              
 
     # P = 2 * 0.038860387943791645                                                                                                                                                  
