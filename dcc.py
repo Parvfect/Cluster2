@@ -308,12 +308,10 @@ def decoding_errors_fer(k, n, dv, dc, ffdim, P, H, G, GF, graph, C, symbols, n_m
     print(iterations)
     print(decoding_failures)
 
-    # Need to uncomment
-    """
+    
     write_path = os.path.join(os.environ['HOME'], "results2.txt")
     with open(write_path, "a") as f:
         f.write(f"\nIterations {iterations} Failures {decoding_failures}")
-    """
         
     return frame_error_rate
 
@@ -336,7 +334,7 @@ if __name__ == "__main__":
     n_motifs, n_picks = 8, 4
     dv, dc, ffdim, P = 3, 9, 67, 2 * 0.038860387943791645 
     k, n = 30, 45
-    L, M = 12, 51
+    L, M = 30, 75
     read_lengths = np.arange(11,12)
 
     #run_fer(n_motifs, n_picks, dv, dc, k, n, L, M, ffdim, P, code_class="",  uncoded=False, zero_codeword=False, bec_decoder=False, graph_decoding=False, read_lengths=read_lengths)
