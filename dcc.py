@@ -6,6 +6,7 @@ import coding_matrices as r
 import math
 import numpy as np
 from itertools import combinations
+import datetime
 import sys
 from tqdm import tqdm
 from protograph.protograph_interface import get_Harr_sc_ldpc, get_dv_dc
@@ -18,6 +19,7 @@ from cProfile import Profile
 from cc import get_parameters, get_parameters_sc_ldpc
 from tanner_qspa import TannerQSPA, get_max_symbol
 from more_itertools import distinct_permutations
+import uuid
 
 def hw_likelihoods(k_motifs, codeword_noise, eps, threshold=1e10):
 
@@ -277,8 +279,16 @@ def decoding_errors_fer(k, n, dv, dc, ffdim, P, H, G, GF, graph, C, symbols, n_m
 
     frame_error_rate = []
     symbol_keys = np.arange(0, ffdim)
+
+    uid_filepath = str(datetime.datetime.now()) + " " + str(uuid.uuid4())
     
+    write_path = os.path.join(os.environ['HOME'], os.path.join("results", f"{uid_filepath}.txt")) 
+
     decoding_failures, iterations, counter = 0, 0, 0
+
+    # Updating result file per iterations
+    writing_per_iterations = 10
+
     for iteration in tqdm(range(max_iterations)):
             
         input_arr = [random.choice(symbol_keys) for i in range(k)]
@@ -303,14 +313,12 @@ def decoding_errors_fer(k, n, dv, dc, ffdim, P, H, G, GF, graph, C, symbols, n_m
             decoding_failures+=1
             
         iterations += 1
-            
-    
-    print(iterations)
-    print(decoding_failures)
 
-    
-    write_path = os.path.join(os.environ['HOME'], "results2.txt")
-    with open(write_path, "a") as f:
+        with open(write_path, "w") as f:
+            f.write(f"\nIterations {iterations} Failures {decoding_failures}")
+
+    final_write_path = os.path.join(os.environ['HOME'], "results.txt")
+    with open(final_write_path, "a") as f:
         f.write(f"\nIterations {iterations} Failures {decoding_failures}")
         
     return frame_error_rate
@@ -334,15 +342,15 @@ if __name__ == "__main__":
     n_motifs, n_picks = 8, 4
     dv, dc, ffdim, P = 3, 9, 67, 2 * 0.038860387943791645 
     k, n = 30, 45
-    L, M = 50, 1002
+    L, M = 50, 501
     read_lengths = np.arange(11,12)
 
     #run_fer(n_motifs, n_picks, dv, dc, k, n, L, M, ffdim, P, code_class="",  uncoded=False, zero_codeword=False, bec_decoder=False, graph_decoding=False, read_lengths=read_lengths)
         
-    Harr = r.get_H_arr(dv, dc, k, n)
+    Harr = []
     masked=False
 
-    run_fer(n_motifs, n_picks, dv, dc, k, n, L, M, ffdim, P, code_class="sc_",  uncoded=False, zero_codeword=True, masked=masked, bec_decoder=False, graph_decoding=True, read_lengths=read_lengths, label="Zero", Harr=Harr)
+    run_fer(n_motifs, n_picks, dv, dc, k, n, L, M, ffdim, P, code_class="",  uncoded=False, zero_codeword=True, masked=masked, bec_decoder=False, graph_decoding=True, read_lengths=read_lengths, label="Zero", Harr=Harr)
 
 
     # P = 2 * 0.038860387943791645                                                                                                                                                  
