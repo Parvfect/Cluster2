@@ -110,8 +110,10 @@ def get_parameters(n_motifs, n_picks, dv, dc, k, n, ffdim, zero_codeword=False, 
     
     symbols = choose_symbols(n_motifs, n_picks)
     
-    for i in range(math.comb(n_motifs, n_picks) - ffdim):
-        symbols.pop()
+    # Popping last three symbols
+    symbols.pop()
+    symbols.pop()
+    symbols.pop()
         
     symbol_keys = np.arange(0, ffdim)
 
@@ -155,9 +157,12 @@ def get_parameters_sc_ldpc(n_motifs, n_picks, L, M, dv, dc, k, n, ffdim, zero_co
     
     symbols = choose_symbols(n_motifs, n_picks)
     
-    for i in range(math.comb(n_motifs, n_picks) - ffdim):
-        symbols.pop()
+    # Popping last three symbols
+    symbols.pop()
+    symbols.pop()
+    symbols.pop()
     
+
     symbol_keys = np.arange(0, ffdim)
     
     if Harr is None:
