@@ -309,6 +309,7 @@ def decoding_errors_fer(k, n, dv, dc, ffdim, P, H, G, GF, graph, C, symbols, n_m
         z = graph.qspa_decode(symbol_likelihoods_arr, H, GF)
         
         # Validating
+        
         if not np.array_equal(C, z):
             decoding_failures+=1
             
@@ -329,7 +330,7 @@ def run_fer(n_motifs, n_picks, dv, dc, k, n, L, M, ffdim, P, code_class="", iter
     if code_class == "sc_":
         k, n, H, G, graph, C, symbols, motifs = get_parameters_sc_ldpc(n_motifs, n_picks, L, M, dv, dc, k, n, ffdim, zero_codeword=zero_codeword, display=False, Harr=None, H=None, G=None)
     else:
-        H, G, graph, C, symbols, motifs = get_parameters(n_motifs, n_picks, dv, dc, k, n, ffdim, zero_codeword=zero_codeword, display=False, Harr=Harr, H=None, G=None)
+        H, G, graph, C, symbols, motifs = get_parameters(n_motifs, n_picks, dv, dc, k, n, ffdim, zero_codeword=zero_codeword, display=False, Harr=None, H=None, G=None)
     
     GF = galois.GF(ffdim)
     GFH = GF(H.astype(int)) # * GF(np.random.choice(GF.elements[1:], siz
