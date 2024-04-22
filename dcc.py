@@ -155,9 +155,8 @@ def get_parameters_sc_ldpc(n_motifs, n_picks, L, M, dv, dc, k, n, ffdim, zero_co
     
     symbols = choose_symbols(n_motifs, n_picks)
     
-    symbols.pop()
-    symbols.pop()
-    symbols.pop()
+    for i in range(math.comb(n_motifs, n_picks) - ffdim):
+        symbols.pop()
     
     symbol_keys = np.arange(0, ffdim)
     
@@ -190,7 +189,7 @@ def get_parameters_sc_ldpc(n_motifs, n_picks, L, M, dv, dc, k, n, ffdim, zero_co
         print("Codeword is not valid, aborting simulation")
         exit()
 
-    return H, G, graph, C, symbols, motifs
+    return k, n, H, G, graph, C, symbols, motifs
 
 
 def get_symbol_likelihood(n_motifs, n_picks, ffdim, motif_occurences, P, pop=True):
@@ -265,7 +264,7 @@ def unmask_reordering(symbol_likelihood_arr, mask, ffdim):
     return unmasked_likelihood_arr
 
 
-def decoding_errors_fer(k, n, dv, dc, ffdim, P, H, G, GF, graph, C, symbols, n_motifs, n_picks, decoder=None, masked=False, decoding_failures_parameter=20, max_iterations=10, iterations=500, uncoded=False, bec_decoder=False, label=None, code_class="", read_lengths=np.arange(1,20)):
+def decoding_errors_fer(k, n, dv, dc, ffdim, P, H, G, GF, graph, C, symbols, n_motifs, n_picks, decoder=None, masked=False, decoding_failures_parameter=20, max_iterations=50, iterations=500, uncoded=False, bec_decoder=False, label=None, code_class="", read_lengths=np.arange(1,20)):
 
     decoding_failures_parameter = max_iterations # Change this for long compute
 
@@ -302,18 +301,20 @@ def decoding_errors_fer(k, n, dv, dc, ffdim, P, H, G, GF, graph, C, symbols, n_m
     print(iterations)
     print(decoding_failures)
 
+    # Need to uncomment
+    """
     write_path = os.path.join(os.environ['HOME'], "results2.txt")
     with open(write_path, "a") as f:
         f.write(f"\nIterations {iterations} Failures {decoding_failures}")
-
-
+    """
+        
     return frame_error_rate
 
 
 def run_fer(n_motifs, n_picks, dv, dc, k, n, L, M, ffdim, P, code_class="", iterations=10, cc_decoder=False, masked=False, bec_decoder=False, uncoded=False, read_lengths=np.arange(1,20), max_iter=10,  zero_codeword=False, graph_decoding=False, label=None, Harr=None):
     
     if code_class == "sc_":
-        H, G, graph, C, symbols, motifs = get_parameters_sc_ldpc(n_motifs, n_picks, L, M, dv, dc, k, n, ffdim, zero_codeword=zero_codeword, display=False, Harr=None, H=None, G=None)
+        k, n, H, G, graph, C, symbols, motifs = get_parameters_sc_ldpc(n_motifs, n_picks, L, M, dv, dc, k, n, ffdim, zero_codeword=zero_codeword, display=False, Harr=None, H=None, G=None)
     else:
         H, G, graph, C, symbols, motifs = get_parameters(n_motifs, n_picks, dv, dc, k, n, ffdim, zero_codeword=zero_codeword, display=False, Harr=Harr, H=None, G=None)
     
@@ -330,14 +331,14 @@ if __name__ == "__main__":
         dv, dc, ffdim, P = 3, 9, 67, 2 * 0.038860387943791645 
         k, n = 30, 45
         L, M = 12, 51
-        read_lengths = np.arange(10,11)
+        read_lengths = np.arange(11,12)
 
         #run_fer(n_motifs, n_picks, dv, dc, k, n, L, M, ffdim, P, code_class="",  uncoded=False, zero_codeword=False, bec_decoder=False, graph_decoding=False, read_lengths=read_lengths)
          
         Harr = r.get_H_arr(dv, dc, k, n)
         masked=False
 
-        run_fer(n_motifs, n_picks, dv, dc, k, n, L, M, ffdim, P, code_class="",  uncoded=False, zero_codeword=True, masked=masked, bec_decoder=False, graph_decoding=True, read_lengths=read_lengths, label="Zero", Harr=Harr)
+        run_fer(n_motifs, n_picks, dv, dc, k, n, L, M, ffdim, P, code_class="sc_",  uncoded=False, zero_codeword=True, masked=masked, bec_decoder=False, graph_decoding=True, read_lengths=read_lengths, label="Zero", Harr=Harr)
 
         
     (

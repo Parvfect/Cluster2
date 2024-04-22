@@ -1,6 +1,6 @@
 
 
-import protograph.sc_ldpc_protograph
+import protograph.sc_ldpc_protograph as sc_ldpc_protograph
 import numpy as np
 
 
