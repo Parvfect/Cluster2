@@ -211,8 +211,10 @@ def get_symbol_likelihood(n_motifs, n_picks, ffdim, motif_occurences, P, pop=Tru
     # Getting the Likelihoods from Alberto's Likelihood Generator
     likelihoods = hw_likelihoods(n_picks, motif_occurences, P)
 
-    for i in range(math.comb(n_motifs, n_picks) - ffdim):
-        likelihoods.pop()
+    # Popping the last three symbols
+    likelihoods.pop()
+    likelihoods.pop()
+    likelihoods.pop()
 
     if sum(likelihoods) == 0: # Prevent divide by zero
         likelihoods = list(np.ones(67)/67)
