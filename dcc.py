@@ -322,7 +322,7 @@ def decoding_errors_fer(k, n, dv, dc, ffdim, P, H, G, GF, graph, C, symbols, n_m
             with open(write_path, "a") as f:
                 f.write(f"\nIterations {iterations} Failures {decoding_failures}")
         
-    final_write_path = os.path.join(os.environ['HOME'], "results2.txt")
+    final_write_path = os.path.join(os.environ['HOME'], "results_13.txt")
     with open(final_write_path, "a") as f:
         f.write(f"\nIterations {iterations} Failures {decoding_failures}")
          
@@ -348,7 +348,7 @@ if __name__ == "__main__":
     dv, dc, ffdim, P = 3, 9, 67, 2 * 0.038860387943791645 
     k, n = 30, 45
     L, M = 50, 501
-    read_lengths = np.arange(12,13)
+    read_lengths = np.arange(13,14)
 
     #run_fer(n_motifs, n_picks, dv, dc, k, n, L, M, ffdim, P, code_class="",  uncoded=False, zero_codeword=False, bec_decoder=False, graph_decoding=False, read_lengths=read_lengths)
         
