@@ -273,7 +273,7 @@ def unmask_reordering(symbol_likelihood_arr, mask, ffdim):
     return unmasked_likelihood_arr
 
 
-def decoding_errors_fer(k, n, dv, dc, ffdim, P, H, G, GF, graph, C, symbols, n_motifs, n_picks, decoder=None, masked=False, decoding_failures_parameter=20, max_iterations=20, iterations=500, uncoded=False, bec_decoder=False, label=None, code_class="", read_lengths=np.arange(1,20)):
+def decoding_errors_fer(k, n, dv, dc, ffdim, P, H, G, GF, graph, C, symbols, n_motifs, n_picks, decoder=None, masked=False, decoding_failures_parameter=20, max_iterations=10, iterations=500, uncoded=False, bec_decoder=False, label=None, code_class="", read_lengths=np.arange(1,20)):
 
     decoding_failures_parameter = max_iterations # Change this for long compute
 
@@ -318,9 +318,9 @@ def decoding_errors_fer(k, n, dv, dc, ffdim, P, H, G, GF, graph, C, symbols, n_m
             
         iterations += 1
         
-        if iteration % writing_per_iterations == 0:
-            with open(write_path, "a") as f:
-                f.write(f"\nIterations {iterations} Failures {decoding_failures}")
+        # if iteration % writing_per_iterations == 0: Write every iteration - not the overhead
+        with open(write_path, "a") as f:
+            f.write(f"\nIterations {iterations} Failures {decoding_failures}")
         
     final_write_path = os.path.join(os.environ['HOME'], "results_12.txt")
     with open(final_write_path, "a") as f:
@@ -353,7 +353,7 @@ if __name__ == "__main__":
     Harr = []
     masked=False
 
-    run_fer(n_motifs, n_picks, dv, dc, k, n, L, M, ffdim, P, code_class="",  uncoded=False, zero_codeword=True, masked=masked, bec_decoder=False, graph_decoding=True, read_lengths=read_lengths, label="Zero", Harr=Harr)
+    run_fer(n_motifs, n_picks, dv, dc, k, n, L, M, ffdim, P, code_class="sc_",  uncoded=False, zero_codeword=True, masked=masked, bec_decoder=False, graph_decoding=True, read_lengths=read_lengths, label="Zero", Harr=Harr)
 
 
     # P = 2 * 0.038860387943791645                                                                                                                                                  
