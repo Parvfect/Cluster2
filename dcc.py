@@ -1,5 +1,4 @@
 
-import utils
 import os
 import galois
 import coding_matrices as r
