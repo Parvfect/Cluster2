@@ -321,7 +321,7 @@ def decoding_errors_fer(k, n, dv, dc, ffdim, P, H, G, GF, graph, C, symbols, n_m
         with open(write_path, "a") as f:
             f.write(f"\nIterations {iterations} Failures {decoding_failures}")
         
-    final_write_path = os.path.join(os.environ['HOME'], "results_12.txt")
+    final_write_path = os.path.join(os.environ['HOME'], "results_13.txt")
     with open(final_write_path, "a") as f:
         f.write(f"\nIterations {iterations} Failures {decoding_failures}")
          
