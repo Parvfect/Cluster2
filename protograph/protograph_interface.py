@@ -25,7 +25,7 @@ def get_Harr_sc_ldpc(L, M, dv=3, dc=9):
     cns_len = int((L + dv - 1) * dv / dc * M)
     k = int(n - cns_len)
     dcs = np.zeros(cns_len, dtype=int)
-    dvs = [3 for i in range(L * M)] 
+    dvs = [dv for i in range(L * M)] 
 
     
     Harr = Harr.flatten()
