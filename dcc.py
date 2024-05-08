@@ -321,7 +321,7 @@ def decoding_errors_fer(k, n, dv, dc, ffdim, P, H, G, GF, graph, C, symbols, n_m
         with open(write_path, "a") as f:
             f.write(f"\nIterations {iterations} Failures {decoding_failures}")
         
-    final_write_path = os.path.join(os.environ['HOME'], "results_11_412.txt")
+    final_write_path = os.path.join(os.environ['HOME'], "results_10_412.txt")
     with open(final_write_path, "a") as f:
         f.write(f"\nIterations {iterations} Failures {decoding_failures}")
          
@@ -347,7 +347,7 @@ if __name__ == "__main__":
     dv, dc, ffdim, P = 4, 12, 67, 2 * 0.038860387943791645 
     k, n = 30, 45
     L, M = 50, 1002
-    read_lengths = np.arange(11,12)
+    read_lengths = np.arange(10,11)
         
     Harr = []
     masked=False
