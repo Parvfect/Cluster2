@@ -272,7 +272,7 @@ def unmask_reordering(symbol_likelihood_arr, mask, ffdim):
     return unmasked_likelihood_arr
 
 
-def decoding_errors_fer(k, n, dv, dc, ffdim, P, H, G, GF, graph, C, symbols, n_motifs, n_picks, decoder=None, masked=False, decoding_failures_parameter=20, max_iterations=20, iterations=500, uncoded=False, bec_decoder=False, label=None, code_class="", read_lengths=np.arange(1,20)):
+def decoding_errors_fer(k, n, dv, dc, ffdim, P, H, G, GF, graph, C, symbols, n_motifs, n_picks, decoder=None, masked=False, decoding_failures_parameter=20, max_iterations=10, iterations=500, uncoded=False, bec_decoder=False, label=None, code_class="", read_lengths=np.arange(1,20)):
 
     decoding_failures_parameter = max_iterations # Change this for long compute
 
