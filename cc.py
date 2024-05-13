@@ -114,9 +114,11 @@ def get_parameters(n_motifs, n_picks, dv, dc, k, n, ffdim, zero_codeword=False, 
     symbols = choose_symbols(n_motifs, n_picks)
 
     # Pop the last n symbols as per difference in finite field and unique symbols through combinations
-    for i in range(math.comb(n_motifs, n_picks) - ffdim):
-        symbols.pop()
+    symbols.pop()
+    symbols.pop()
+    symbols.pop()
     
+
     symbol_keys = np.arange(0, ffdim)
 
     #graph = VariableTannerGraph(dv, dc, k, n, ffdim=ffdim)
@@ -159,9 +161,11 @@ def get_parameters_sc_ldpc(n_motifs, n_picks, L, M, dv, dc, k, n, ffdim, display
     
     symbols = choose_symbols(n_motifs, n_picks)
     
-    for i in range(math.comb(n_motifs, n_picks) - ffdim):
-        symbols.pop()
+    symbols.pop()
+    symbols.pop()
+    symbols.pop()
     
+
     symbol_keys = np.arange(0, ffdim)
     
     if Harr is None:
