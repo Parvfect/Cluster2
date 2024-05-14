@@ -290,10 +290,9 @@ if __name__ == "__main__":
     read_length = 6
     read_lengths = np.arange(6, 7)
 
-    Harr = r.get_H_arr(dv, dc, k, n)
     masked = True
 
-    run_fer(n_motifs, n_picks, dv, dc, k, n, L, M, ffdim, code_class="sc_", saved_code=False,  uncoded=False, bec_decoder=False, read_lengths=read_lengths, zero_codeword=True, label="ZeroCW", Harr=Harr, masked=masked)
+    run_fer(n_motifs, n_picks, dv, dc, k, n, L, M, ffdim, code_class="sc_", saved_code=False,  uncoded=False, bec_decoder=False, read_lengths=read_lengths, zero_codeword=True, label="ZeroCW", masked=masked)
 
 
 
