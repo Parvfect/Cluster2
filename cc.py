@@ -285,7 +285,7 @@ if __name__ == "__main__":
     n_motifs, n_picks = 8, 4
     dv, dc, ffdim = 4, 12, 67
     k, n = 30, 45
-    L, M = 20, 51
+    L, M = 50, 1002
     read_length = 6
     read_lengths = np.arange(6, 7)
 
