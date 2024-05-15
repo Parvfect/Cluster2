@@ -165,7 +165,6 @@ def get_parameters_sc_ldpc(n_motifs, n_picks, L, M, dv, dc, k, n, ffdim, display
     symbols.pop()
     symbols.pop()
     
-
     symbol_keys = np.arange(0, ffdim)
     
     if Harr is None:
@@ -178,7 +177,7 @@ def get_parameters_sc_ldpc(n_motifs, n_picks, L, M, dv, dc, k, n, ffdim, display
 
     if H is None and G is None:
         H = r.get_H_matrix_sclpdc(dv, dc, k, n, Harr)
-        G = r.parity_to_generator(H, ffdim=ffdim)
+        G = np.zeros([k,n], dtype=int)
 
     if np.any(np.dot(G, H.T) % ffdim != 0):
         print("Matrices are not valid, aborting simulation")
@@ -197,7 +196,7 @@ def get_parameters_sc_ldpc(n_motifs, n_picks, L, M, dv, dc, k, n, ffdim, display
     if display:
         display_parameters(n_motifs, n_picks, dv, dc, k, n, motifs, symbols, Harr, H, G, C)
 
-    return graph, G, symbols, motifs
+    return k, n, graph, G, symbols, motifs
 
 
 def run_singular_decoding(graph, C, read_length, symbols, motifs, n_picks):
@@ -274,7 +273,7 @@ def decoding_errors_fer(k, n, dv, dc, graph, G, symbols, motifs, n_picks, decodi
 def run_fer(n_motifs, n_picks, dv, dc, k, n, L, M, ffdim, code_class="", iterations=5, bec_decoder=False, uncoded=False, saved_code=False, singular_decoding=False, fer_errors=True, read_lengths=np.arange(1,20), zero_codeword=False, label="", Harr=None, masked=False):
 
     if code_class == "sc_":
-        graph, G, symbols, motifs = get_parameters_sc_ldpc(n_motifs, n_picks, L, M, dv, dc, k, n, ffdim, display=False)
+        k, n, graph, G, symbols, motifs = get_parameters_sc_ldpc(n_motifs, n_picks, L, M, dv, dc, k, n, ffdim, display=False)
     else:
         graph, G, symbols, motifs = get_parameters(n_motifs, n_picks, dv, dc, k, n, ffdim, display=False, zero_codeword=zero_codeword, Harr=Harr)
     
@@ -286,7 +285,7 @@ if __name__ == "__main__":
     n_motifs, n_picks = 8, 4
     dv, dc, ffdim = 4, 12, 67
     k, n = 30, 45
-    L, M = 50, 1002
+    L, M = 20, 51
     read_length = 6
     read_lengths = np.arange(6, 7)
 
