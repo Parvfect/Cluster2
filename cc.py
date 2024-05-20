@@ -287,7 +287,7 @@ if __name__ == "__main__":
     k, n = 30, 45
     L, M = 50, 1002
     read_length = 6
-    read_lengths = np.arange(6, 7)
+    read_lengths = np.arange(5, 6)
 
     masked = True
 
