@@ -320,8 +320,8 @@ def decoding_errors_fer(k, n, dv, dc, ffdim, P, H, G, GF, graph, C, symbols, n_m
         # if iteration % writing_per_iterations == 0: Write every iteration - not the overhead
         with open(write_path, "a") as f:
             f.write(f"\nIterations {iterations} Failures {decoding_failures}")
-        
-    final_write_path = os.path.join(os.environ['HOME'], "results_12_412.txt")
+
+    final_write_path = os.path.join(os.environ['HOME'], f"results_{read_lengths[0]}_dcc.txt")
     with open(final_write_path, "a") as f:
         f.write(f"\nIterations {iterations} Failures {decoding_failures}")
          
