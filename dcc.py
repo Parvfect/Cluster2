@@ -347,7 +347,7 @@ if __name__ == "__main__":
     dv, dc, ffdim, P = 4, 12, 67, 2 * 0.038860387943791645 
     k, n = 30, 45
     L, M = 50, 1002
-    read_lengths = np.arange(12,13)
+    read_lengths = np.arange(13,14)
         
     Harr = []
     masked=False
